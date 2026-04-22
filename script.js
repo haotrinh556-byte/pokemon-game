@@ -49,114 +49,6 @@ const allEntries = [
   ...medicineNames.map((name) => ({ name, type: "Medicine" }))
 ];
 
-const scoreElement = document.getElementById("score");
-const roundsPlayedElement = document.getElementById("rounds-played");
-const nameDisplayElement = document.getElementById("name-display");
-const feedbackElement = document.getElementById("feedback");
-const pokemonButton = document.getElementById("pokemon-button");
-const medicineButton = document.getElementById("medicine-button");
-const nextButton = document.getElementById("next-button");
-const restartButton = document.getElementById("restart-button");
-
-let score = 0;
-let roundsPlayed = 0;
-let currentEntry = null;
-let roundAnswered = false;
-let roundPool = [];
-
-function shuffle(array) {
-  const copy = [...array];
-
-  for (let index = copy.length - 1; index > 0; index -= 1) {
-    const randomIndex = Math.floor(Math.random() * (index + 1));
-    [copy[index], copy[randomIndex]] = [copy[randomIndex], copy[index]];
-  }
-
-  return copy;
-}
-
-function updateScoreboard() {
-  scoreElement.textContent = String(score);
-  roundsPlayedElement.textContent = String(roundsPlayed);
-}
-
-function updateFeedback(message, status) {
-  feedbackElement.textContent = message;
-  feedbackElement.className = "feedback";
-
-  if (status) {
-    feedbackElement.classList.add(status);
-  }
-}
-
-function setGuessButtonsState(disabled) {
-  pokemonButton.disabled = disabled;
-  medicineButton.disabled = disabled;
-}
-
-function refillRoundPool() {
-  roundPool = shuffle(allEntries);
-}
-
-function showNextRound() {
-  if (roundPool.length === 0) {
-    refillRoundPool();
-  }
-
-  currentEntry = roundPool.pop();
-  roundAnswered = false;
-  nameDisplayElement.textContent = currentEntry.name;
-  updateFeedback("Choose whether this name is a Pokémon or a medicine.");
-  setGuessButtonsState(false);
-  nextButton.disabled = true;
-}
-
-function handleGuess(choice) {
-  if (!currentEntry || roundAnswered) {
-    return;
-  }
-
-  roundAnswered = true;
-  roundsPlayed += 1;
-
-  if (choice === currentEntry.type) {
-    score += 1;
-    updateFeedback(`Correct! ${currentEntry.name} is a ${currentEntry.type}.`, "correct");
-  } else {
-    updateFeedback(`Wrong! ${currentEntry.name} is a ${currentEntry.type}.`, "wrong");
-  }
-
-  updateScoreboard();
-  setGuessButtonsState(true);
-  nextButton.disabled = false;
-}
-
-function restartGame() {
-  score = 0;
-  roundsPlayed = 0;
-  updateScoreboard();
-  refillRoundPool();
-  showNextRound();
-}
-
-pokemonButton.addEventListener("click", function () {
-  handleGuess("Pokémon");
-});
-
-medicineButton.addEventListener("click", function () {
-  handleGuess("Medicine");
-});
-
-nextButton.addEventListener("click", function () {
-  showNextRound();
-});
-
-restartButton.addEventListener("click", function () {
-  restartGame();
-});
-
-restartGame();
-
 function createSvgImageDataUri(label, theme) {
   const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" role="img" aria-label="${label}">
@@ -320,3 +212,202 @@ const medicineImageMap = {
     start: "#eef5ff",
     end: "#dce8ff",
     bottle: "#c1d5ff",
+    cap: "#6b8cdf",
+    pill: "#4c67ba",
+    text: "#20355c"
+  }),
+  Hydrocortisone: createSvgImageDataUri("Hydrocortisone", {
+    start: "#fff4ef",
+    end: "#ffe2d8",
+    bottle: "#ffccb8",
+    cap: "#ea8b68",
+    pill: "#cb6641",
+    text: "#612d1f"
+  }),
+  Tramadol: createSvgImageDataUri("Tramadol", {
+    start: "#f0fff9",
+    end: "#d8f7ea",
+    bottle: "#b8ead0",
+    cap: "#50bb8c",
+    pill: "#2b8d65",
+    text: "#184f39"
+  }),
+  Gabapentin: createSvgImageDataUri("Gabapentin", {
+    start: "#f3f7ff",
+    end: "#dfe8fb",
+    bottle: "#c7d7f8",
+    cap: "#738fcc",
+    pill: "#5472ae",
+    text: "#23385f"
+  }),
+  Levothyroxine: createSvgImageDataUri("Levothyroxine", {
+    start: "#fff4ee",
+    end: "#ffe1d6",
+    bottle: "#ffc7b3",
+    cap: "#eb8661",
+    pill: "#ce5f37",
+    text: "#642d1d"
+  })
+};
+
+const pokemonImageMap = {
+  Pikachu: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
+  Bulbasaur: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
+  Charmander: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png",
+  Squirtle: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png",
+  Jigglypuff: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/39.png",
+  Meowth: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/52.png",
+  Snorlax: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png",
+  Eevee: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/133.png",
+  Gengar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/94.png",
+  Lapras: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/131.png",
+  Psyduck: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/54.png",
+  Machop: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/66.png",
+  Onix: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/95.png",
+  Togepi: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/175.png",
+  Mareep: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/179.png",
+  Mudkip: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/258.png",
+  Lucario: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/448.png",
+  Greninja: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/658.png",
+  Rowlet: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/722.png",
+  Mimikyu: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/778.png"
+};
+
+const scoreElement = document.getElementById("score");
+const roundsPlayedElement = document.getElementById("rounds-played");
+const nameDisplayElement = document.getElementById("name-display");
+const feedbackElement = document.getElementById("feedback");
+const imagePanelElement = document.getElementById("image-panel");
+const itemImageElement = document.getElementById("item-image");
+const pokemonButton = document.getElementById("pokemon-button");
+const medicineButton = document.getElementById("medicine-button");
+const nextButton = document.getElementById("next-button");
+const restartButton = document.getElementById("restart-button");
+
+let score = 0;
+let roundsPlayed = 0;
+let currentEntry = null;
+let roundAnswered = false;
+let roundPool = [];
+
+function shuffle(array) {
+  const copy = [...array];
+
+  for (let index = copy.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [copy[index], copy[randomIndex]] = [copy[randomIndex], copy[index]];
+  }
+
+  return copy;
+}
+
+function updateScoreboard() {
+  scoreElement.textContent = String(score);
+  roundsPlayedElement.textContent = String(roundsPlayed);
+}
+
+function updateFeedback(message, status) {
+  feedbackElement.textContent = message;
+  feedbackElement.className = "feedback";
+
+  if (status) {
+    feedbackElement.classList.add(status);
+  }
+}
+
+function setGuessButtonsState(disabled) {
+  pokemonButton.disabled = disabled;
+  medicineButton.disabled = disabled;
+}
+
+function refillRoundPool() {
+  roundPool = shuffle(allEntries);
+}
+
+function clearItemImage() {
+  imagePanelElement.hidden = true;
+  itemImageElement.src = "";
+  itemImageElement.alt = "";
+}
+
+function getImageUrl(entry) {
+  if (entry.type === "Pokémon") {
+    return pokemonImageMap[entry.name] || placeholderImageUrl;
+  }
+
+  return medicineImageMap[entry.name] || placeholderImageUrl;
+}
+
+function showItemImage(entry) {
+  const imageUrl = getImageUrl(entry);
+
+  itemImageElement.onerror = function () {
+    itemImageElement.onerror = null;
+    itemImageElement.src = placeholderImageUrl;
+  };
+
+  itemImageElement.src = imageUrl;
+  itemImageElement.alt = `${entry.name} image`;
+  imagePanelElement.hidden = false;
+}
+
+function showNextRound() {
+  if (roundPool.length === 0) {
+    refillRoundPool();
+  }
+
+  currentEntry = roundPool.pop();
+  roundAnswered = false;
+  nameDisplayElement.textContent = currentEntry.name;
+  updateFeedback("Choose whether this name is a Pokémon or a medicine.");
+  clearItemImage();
+  setGuessButtonsState(false);
+  nextButton.disabled = true;
+}
+
+function handleGuess(choice) {
+  if (!currentEntry || roundAnswered) {
+    return;
+  }
+
+  roundAnswered = true;
+  roundsPlayed += 1;
+
+  if (choice === currentEntry.type) {
+    score += 1;
+    updateFeedback(`Correct! ${currentEntry.name} is a ${currentEntry.type}.`, "correct");
+  } else {
+    updateFeedback(`Wrong! ${currentEntry.name} is a ${currentEntry.type}.`, "wrong");
+  }
+
+  updateScoreboard();
+  showItemImage(currentEntry);
+  setGuessButtonsState(true);
+  nextButton.disabled = false;
+}
+
+function restartGame() {
+  score = 0;
+  roundsPlayed = 0;
+  updateScoreboard();
+  refillRoundPool();
+  showNextRound();
+}
+
+pokemonButton.addEventListener("click", function () {
+  handleGuess("Pokémon");
+});
+
+medicineButton.addEventListener("click", function () {
+  handleGuess("Medicine");
+});
+
+nextButton.addEventListener("click", function () {
+  showNextRound();
+});
+
+restartButton.addEventListener("click", function () {
+  restartGame();
+});
+
+restartGame();
